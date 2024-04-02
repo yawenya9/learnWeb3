@@ -1,0 +1,33 @@
+const Web3 = require('web3');
+
+// 连接到以太坊节点
+const web3 = new Web3('https://mainnet.infura.io/v3/your_infura_project_id');
+
+// 设置发送方地址和私钥
+const senderAddress = '0xYourSenderAddress';
+const privateKey = '0xYourPrivateKey';
+
+// 设置接收方地址和转账金额（以wei为单位）
+const recipientAddress = '0xRecipientAddress';
+const amountToSend = web3.utils.toWei('0.1', 'ether');
+
+// 构造交易对象
+const txObject = {
+  from: senderAddress,
+  to: recipientAddress,
+  value: amountToSend,
+  gas: 21000,  // 设置 gas 限额
+  gasPrice: web3.utils.toWei('10', 'gwei')  // 设置 gas 价格
+};
+
+// 签名并发送交易
+web3.eth.accounts.signTransaction(txObject, privateKey)
+  .then(signedTx => {
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  })
+  .then(receipt => {
+    console.log('Transaction receipt:', receipt);
+  })
+  .catch(error => {
+    console.error('Error occurred:', error);
+  });
