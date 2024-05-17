@@ -1,0 +1,32 @@
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+import org.web3j.protocol.http.HttpService;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class EthereumBalance {
+
+    public static void main(String[] args) {
+        // 连接到以太坊节点
+        Web3j web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"));
+
+        // 要查询的账户地址
+        String address = "0xYourAccountAddress";
+
+        try {
+            // 查询账户余额
+            EthGetBalance balance = web3.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+
+            // 将余额转换为以太单位
+            BigInteger weiBalance = balance.getBalance();
+            BigDecimal ethBalance = new BigDecimal(weiBalance).divide(BigDecimal.TEN.pow(18));
+
+            System.out.println("账户 " + address + " 的余额为 " + ethBalance + " ETH");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
